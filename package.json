@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "dev": ". venv/bin/activate; uvicorn main:app --reload --port 3777",
+    "dev": ". venv/bin/activate; cd app; uvicorn main:app --reload --port 3777",
     "ngrok": "ngrok http 3777"
   },
   "author": "Y.Hasegawa",

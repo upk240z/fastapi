@@ -2,10 +2,11 @@ import os
 import uuid
 from pyzbar.pyzbar import decode, ZBarSymbol
 from PIL import Image
+from config import Config
 
 
 def strip_image(img: Image):
-    tmp_file = 'tmp/' + str(uuid.uuid1()) + '.' + ('png' if img.format == 'PNG' else 'jpg')
+    tmp_file = Config.basedir() + '/tmp/' + str(uuid.uuid1()) + '.' + ('png' if img.format == 'PNG' else 'jpg')
     img.save(tmp_file)
     strip_img = Image.open(tmp_file)
     os.remove(tmp_file)

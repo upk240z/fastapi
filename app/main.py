@@ -6,6 +6,7 @@ from pydantic import BaseModel
 from io import BytesIO
 from PIL import Image
 from functions import scan
+from config import Config
 
 
 class QRCodeParameter(BaseModel):
@@ -14,20 +15,21 @@ class QRCodeParameter(BaseModel):
 
 
 app = FastAPI()
-
-origins = [
-    'http://localhost:3987',
-    'http://localhost:3000',
-    'http://localhost:8000',
-]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=Config.get('origins'),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.get('/debug')
+async def debug():
+    return {
+        'basedir': Config.basedir(),
+        'settings': Config.get('settings'),
+        'origins': Config.get('origins'),
+    }
 
 
 @app.post('/qrcode')
