@@ -11,7 +11,7 @@ mkdir tmp
 
 ## Settings
 
-* CORS Origins
+* CORS Origins in config/application.yml
   ```yaml
   origins:
     - https://xxx.xx:8000/
@@ -20,5 +20,5 @@ mkdir tmp
 
 ## Start
 ```
-npm run dev
+npm start
 ```

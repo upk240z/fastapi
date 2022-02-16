@@ -1,14 +1,11 @@
 {
   "name": "Python-FastAPI",
   "version": "1.0.0",
-  "description": "",
+  "description": "Simple APIs on Python",
   "scripts": {
     "dev": ". venv/bin/activate; cd app; uvicorn main:app --reload --port 3777",
-    "ngrok": "ngrok http 3777"
+    "start": ". venv/bin/activate; cd app; uvicorn main:app --port 8000 --host 0.0.0.0"
   },
   "author": "Y.Hasegawa",
-  "license": "ISC",
-  "devDependencies": {
-    "ngrok": "^4.3.0"
-  }
+  "license": "ISC"
 }
