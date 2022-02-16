@@ -11,7 +11,7 @@ mkdir tmp
 
 ## Settings
 
-* add CORS Origins
+* CORS Origins
   ```yaml
   origins:
     - https://xxx.xx:8000/

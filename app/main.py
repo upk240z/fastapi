@@ -23,14 +23,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get('/debug')
-async def debug():
-    return {
-        'basedir': Config.basedir(),
-        'settings': Config.get('settings'),
-        'origins': Config.get('origins'),
-    }
-
 
 @app.post('/qrcode')
 async def qrcode(parameter: QRCodeParameter):
@@ -60,22 +52,25 @@ async def qrcode(parameter: QRCodeParameter):
                 result = pattern1.match(line)
                 if result:
                     matched1 = True
-                    output['decoded']['kata'] = result.group(1)
-                    output['decoded']['rui'] = result.group(2)
                     ymd = result.group(3)
-                    output['decoded']['inspection_fin_date'] = '20' + ymd[0:2] + '-' + ymd[2:4] + '-' + ymd[4:]
                     ym = result.group(4)
-                    output['decoded']['first_month'] = '20' + ym[0:2] + '-' + ym[2:]
+                    output['decoded'].update({
+                        'kana': result.group(1),
+                        'rui': result.group(2),
+                        'inspection_fin_date': '20' + ymd[0:2] + '-' + ymd[2:4] + '-' + ymd[4:],
+                        'first_month': '20' + ym[0:2] + '-' + ym[2:]
+                    })
                     continue
             if not matched2:
                 result = pattern2.match(line)
                 if result:
                     matched2 = True
-                    output['decoded']['plate'] = {}
-                    output['decoded']['plate']['riku'] = result.group(1).replace(' ', '')
-                    output['decoded']['plate']['code'] = result.group(2)
-                    output['decoded']['plate']['hira'] = result.group(3)
-                    output['decoded']['plate']['no'] = result.group(4).replace(' ', '0')
+                    output['decoded']['plate'] = {
+                        'riku': result.group(1).replace(' ', ''),
+                        'code': result.group(2),
+                        'hira': result.group(3),
+                        'no': result.group(4).replace(' ', '0'),
+                    }
     except Exception as ex:
         output['result'] = False
         output['error'] = str(ex)
