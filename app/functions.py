@@ -56,4 +56,4 @@ def parse_inspection(lines: List[str]):
                     'number': result.group(4).replace(' ', '0'),
                 }
 
-    return parsed if matched1 and matched2 else None
+    return parsed if matched1 or matched2 else None

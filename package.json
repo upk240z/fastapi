@@ -4,7 +4,7 @@
   "description": "Simple APIs on Python",
   "scripts": {
     "dev": ". venv/bin/activate; cd app; uvicorn main:app --reload --port 3777",
-    "start": ". venv/bin/activate; cd app; uvicorn main:app --reload --port 8000 --host 0.0.0.0"
+    "start": ". venv/bin/activate; cd app; uvicorn main:app --port 8000 --host 0.0.0.0"
   },
   "author": "Y.Hasegawa",
   "license": "ISC"
