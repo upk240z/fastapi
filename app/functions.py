@@ -39,7 +39,7 @@ def parse_inspection(lines: List[str]):
                 ymd = result.group(3)
                 ym = result.group(4)
                 parsed.update({
-                    'kana': result.group(1),
+                    'kata': result.group(1),
                     'rui': result.group(2),
                     'inspection-fin-date': '20' + ymd[0:2] + '-' + ymd[2:4] + '-' + ymd[4:],
                     'first-month': '20' + ym[0:2] + '-' + ym[2:]
@@ -56,4 +56,4 @@ def parse_inspection(lines: List[str]):
                     'number': result.group(4).replace(' ', '0'),
                 }
 
-    return parsed
+    return parsed if matched1 and matched2 else None

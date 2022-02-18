@@ -28,39 +28,36 @@ app.add_middleware(
 )
 
 
-@app.post('/qr-base64')
-async def qrcode(parameter: QRCodeBase64Parameter):
+def qr(data, is_base64=False):
     output = {
-        'result': True,
-        'error': None,
+        'result': 'success',
+        'message': None,
     }
 
     try:
-        encoded = parameter.base64
-        decoded = base64.b64decode(encoded)
-        img = Image.open(BytesIO(decoded))
+        if is_base64:
+            data = base64.b64decode(data)
+        img = Image.open(BytesIO(data))
         lines = scan_qrcode(img)
         output['parsed'] = parse_inspection(lines)
+        if output['parsed'] is None:
+            output['result'] = 'error'
+            output['message'] = 'Detection failed'
+        elif 'kata' not in output['parsed'] or 'plate' not in output['parsed']:
+            output['result'] = 'warning'
+            output['message'] = 'Some detection failed'
     except Exception as ex:
         output['result'] = False
-        output['error'] = str(ex)
+        output['message'] = str(ex)
 
     return output
+
+
+@app.post('/qr-base64')
+async def qrcode(parameter: QRCodeBase64Parameter):
+    return qr(parameter.base64, True)
 
 
 @app.post('/qr-img')
 async def qrcode(data: bytes = Body(...)):
-    output = {
-        'result': True,
-        'error': None,
-    }
-
-    try:
-        img = Image.open(BytesIO(data))
-        lines = scan_qrcode(img)
-        output['parsed'] = parse_inspection(lines)
-    except Exception as ex:
-        output['result'] = False
-        output['error'] = str(ex)
-
-    return output
+    return qr(data)
