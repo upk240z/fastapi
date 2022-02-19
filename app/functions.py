@@ -28,7 +28,7 @@ def parse_inspection(lines: List[str]):
     matched1 = False
     matched2 = False
 
-    parsed = {}
+    info = {}
 
     for line in lines:
         line = line.translate(table)
@@ -38,7 +38,7 @@ def parse_inspection(lines: List[str]):
                 matched1 = True
                 ymd = result.group(3)
                 ym = result.group(4)
-                parsed.update({
+                info.update({
                     'kata': result.group(1),
                     'rui': result.group(2),
                     'inspection-fin-date': '20' + ymd[0:2] + '-' + ymd[2:4] + '-' + ymd[4:],
@@ -49,11 +49,20 @@ def parse_inspection(lines: List[str]):
             result = pattern2.match(line)
             if result:
                 matched2 = True
-                parsed['plate'] = {
+                info['plate'] = {
                     'area': result.group(1).replace(' ', ''),
                     'class': result.group(2),
                     'hira': result.group(3),
                     'number': result.group(4).replace(' ', '0'),
                 }
 
-    return parsed if matched1 or matched2 else None
+    result_code = 'error'
+    if matched1 and matched2:
+        result_code = 'success'
+    elif matched1 or matched2:
+        result_code = 'warning'
+
+    return {
+        'result': result_code,
+        'info': info
+    }
