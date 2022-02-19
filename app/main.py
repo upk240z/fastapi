@@ -52,5 +52,5 @@ async def qrcode(parameter: QRCodeBase64Parameter):
 
 
 @app.post('/qr-img')
-async def qrcode(data: bytes = Body(...)):
+async def qrcode(data: bytes = Body(..., media_type='image/jpeg')):
     return qr(data)
