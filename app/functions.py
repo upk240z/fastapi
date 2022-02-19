@@ -1,15 +1,20 @@
 import os
 import re
-import uuid
+import hashlib
+from io import BytesIO
 from typing import List
 from pyzbar.pyzbar import decode, ZBarSymbol
 from PIL import Image
 from config import Config
 
 
-def scan_qrcode(img: Image):
-    img_file = Config.basedir() + '/tmp/' + str(uuid.uuid1()) + '.' + ('png' if img.format == 'PNG' else 'jpg')
-    img.save(img_file)
+def scan_qrcode(data: bytes):
+    img = Image.open(BytesIO(data))
+    img_file = Config.basedir() + '/tmp/' + hashlib.sha256(data).hexdigest() + '.' + (
+        'png' if img.format == 'PNG' else 'jpg'
+    )
+    if not os.path.exists(img_file):
+        img.save(img_file)
     results = decode(Image.open(img_file), symbols=[ZBarSymbol.QRCODE])
 
     codes = []

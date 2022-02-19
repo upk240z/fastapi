@@ -2,8 +2,6 @@ import base64
 from fastapi import FastAPI, Body
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from io import BytesIO
-from PIL import Image
 from functions import scan_qrcode, parse_inspection
 from config import Config
 
@@ -38,8 +36,7 @@ def qr(data, is_base64=False):
     try:
         if is_base64:
             data = base64.b64decode(data)
-        img = Image.open(BytesIO(data))
-        lines = scan_qrcode(img)
+        lines = scan_qrcode(data)
         output.update(parse_inspection(lines))
         if output['result'] == 'error':
             output['message'] = 'Detection failed'
