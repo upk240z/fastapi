@@ -1,11 +1,18 @@
 import os
+import datetime
 import re
 import hashlib
+import logging
 from io import BytesIO
 from typing import List
 from pyzbar.pyzbar import decode, ZBarSymbol
 from PIL import Image
 from config import Config
+
+logging.basicConfig(
+    filename=Config.basedir() + '/logs/' + datetime.datetime.today().strftime('%Y%m%d') + '.txt',
+    level=logging.INFO,
+)
 
 
 def scan_qrcode(data: bytes):
@@ -13,13 +20,16 @@ def scan_qrcode(data: bytes):
     img_file = Config.basedir() + '/tmp/' + hashlib.sha256(data).hexdigest() + '.' + (
         'png' if img.format == 'PNG' else 'jpg'
     )
+    logging.info('===== [receive]' + img_file + ' =====')
     if not os.path.exists(img_file):
         img.save(img_file)
     results = decode(Image.open(img_file), symbols=[ZBarSymbol.QRCODE])
 
     codes = []
     for result in sorted(results, key=lambda x: x.rect.left):
-        codes.append(result.data.decode('utf-8'))
+        detected_code = result.data.decode('utf-8')
+        logging.info('[detected]' + detected_code)
+        codes.append(detected_code)
 
     return codes
 
