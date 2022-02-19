@@ -11,11 +11,6 @@ class QRCodeBase64Parameter(BaseModel):
     type: str = 'image/jpeg'
 
 
-class QRCodeImageParameter(BaseModel):
-    base64: str
-    type: str = 'image/jpeg'
-
-
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -26,7 +21,7 @@ app.add_middleware(
 )
 
 
-def qr(data, is_base64=False):
+def qr(data, is_base64=False) -> dict:
     output = {
         'result': 'success',
         'message': None,

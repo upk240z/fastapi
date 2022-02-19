@@ -15,7 +15,7 @@ logging.basicConfig(
 )
 
 
-def scan_qrcode(data: bytes):
+def scan_qrcode(data: bytes) -> List[str]:
     img = Image.open(BytesIO(data))
     img_file = Config.basedir() + '/tmp/' + hashlib.sha256(data).hexdigest() + '.' + (
         'png' if img.format == 'PNG' else 'jpg'
@@ -34,8 +34,9 @@ def scan_qrcode(data: bytes):
     return codes
 
 
-def parse_inspection(lines: List[str]):
+def parse_inspection(lines: List[str]) -> dict:
     table = str.maketrans('０１２３４５６７８９　', '0123456789 ')
+    year_prefix = datetime.datetime.today().strftime('%Y')[0:2]
 
     pattern1 = re.compile(r'^2/-\s+/(\d{5})(\d{4})/(\d+)/(\d+)/')
     pattern2 = re.compile(r'2/(.{4})(.{3})(.)(.{4})/')
@@ -56,8 +57,8 @@ def parse_inspection(lines: List[str]):
                 info.update({
                     'kata': result.group(1),
                     'rui': result.group(2),
-                    'inspection-fin-date': '20' + ymd[0:2] + '-' + ymd[2:4] + '-' + ymd[4:],
-                    'first-month': '20' + ym[0:2] + '-' + ym[2:]
+                    'inspection-fin-date': year_prefix + ymd[0:2] + '-' + ymd[2:4] + '-' + ymd[4:],
+                    'first-month': year_prefix + ym[0:2] + '-' + ym[2:]
                 })
                 continue
         if not matched2:
